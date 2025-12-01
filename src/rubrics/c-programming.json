@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains core C programming concepts such as pointers, memory management, and control structures.",
+      "examplesOfGood": "Uses simple definitions; illustrates pointers with visual memory diagrams; explains structs with concrete examples.",
+      "examplesOfBad": "Provides vague explanations; jumps between topics like arrays and functions without clear transitions."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, energy, and engagement when teaching C syntax, compilation process, and debugging techniques.",
+      "examplesOfGood": "Clear articulation of code snippets; varied tone when highlighting important keywords; steady pace that allows note‑taking.",
+      "examplesOfBad": "Monotone delivery; speaks too quickly through complex code; excessive filler words that obscure meaning."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of C lessons: introduction → concept explanation → coding example → live demonstration → summary.",
+      "examplesOfGood": "Starts with problem statement, explains the relevant C constructs, writes a complete program step‑by‑step, then reviews key takeaways.",
+      "examplesOfBad": "Randomly switches between topics like file I/O and bitwise operators; no clear beginning or wrap‑up."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction with learners through questions, hands‑on coding exercises, and real‑world C applications.",
+      "examplesOfGood": "Poses probing questions about why a pointer needs dereferencing; encourages students to modify a sample program and observe results.",
+      "examplesOfBad": "Delivers a one‑way lecture; never checks if students understand concepts like memory allocation or loop invariants."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of C language information, including syntax, standard library functions, and best practices.",
+      "examplesOfGood": "Accurately describes the difference between `malloc` and `calloc`; uses correct function prototypes and data types.",
+      "examplesOfBad": "States that `sizeof(char)` is 2 bytes; misrepresents the behavior of `strcpy` leading to buffer overflow risks."
+    }
+  ]
+}

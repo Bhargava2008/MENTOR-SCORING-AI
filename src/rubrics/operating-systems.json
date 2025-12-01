@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains operating system concepts such as processes, threads, memory management, and file systems.",
+      "examplesOfGood": "Uses simple definitions; illustrates concepts with real‑world OS examples (e.g., how a scheduler works).",
+      "examplesOfBad": "Provides vague or contradictory explanations; jumps between topics like virtualization and paging without clear links."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, energy, and engagement when presenting OS material.",
+      "examplesOfGood": "Clear voice, varied tone, steady pace; uses diagrams and live demos to reinforce points.",
+      "examplesOfBad": "Monotone voice, speaks too fast during code walkthroughs; excessive filler words that obscure key ideas."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of OS lessons: introduction → core concept → concrete example → summary.",
+      "examplesOfGood": "Starts with an overview of process lifecycle, then demonstrates a scheduling algorithm, and ends with a recap of key takeaways.",
+      "examplesOfBad": "Randomly jumps from virtual memory to device drivers without transitions; lacks a clear beginning or conclusion."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction with learners, prompting questions, and using relevant OS scenarios.",
+      "examplesOfGood": "Asks probing questions like “What happens when a process exceeds its memory quota?” and checks understanding with quick polls.",
+      "examplesOfBad": "Delivers a one‑way lecture with no questions, ignores student confusion about synchronization primitives."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of information about operating system theory and implementations.",
+      "examplesOfGood": "All statements about kernel modes, system calls, and deadlock conditions are factually correct.",
+      "examplesOfBad": "Misstates that RAM is non‑volatile; incorrectly describes how page tables are updated."
+    }
+  ]
+}

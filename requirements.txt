@@ -1,0 +1,12 @@
+# This project uses Node.js. Install dependencies using:
+#     npm install
+
+express
+mongoose
+multer
+dotenv
+axios
+fluent-ffmpeg
+ffmpeg-static
+groq-sdk
+uuid

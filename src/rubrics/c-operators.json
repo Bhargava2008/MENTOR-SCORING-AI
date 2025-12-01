@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains C operators (arithmetic, relational, logical, bitwise, assignment, etc.).",
+      "examplesOfGood": "Uses concise definitions; illustrates each operator with simple code snippets and explains the result step‑by‑step.",
+      "examplesOfBad": "Provides vague or ambiguous explanations; mixes operator categories without clear separation."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, and engagement when presenting C operator concepts.",
+      "examplesOfGood": "Clear articulation; varies tone to emphasize precedence rules; maintains a steady pace allowing learners to follow code examples.",
+      "examplesOfBad": "Monotone delivery; speaks too quickly through complex expressions; uses excessive filler words."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of the lesson: introduction → operator categories → syntax → examples → common pitfalls → summary.",
+      "examplesOfGood": "Starts with why operators matter, groups them logically, uses transitions, and ends with a recap of precedence and associativity.",
+      "examplesOfBad": "Randomly jumps between ++, &&, and |= without a clear order; omits a concluding summary."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction techniques that involve learners in practicing C operators.",
+      "examplesOfGood": "Poses quick quizzes (e.g., predict the output of `a += b << 2`), encourages students to write their own expressions, checks understanding with live coding.",
+      "examplesOfBad": "Delivers a one‑way lecture; never asks for predictions or checks if students grasp operator precedence."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of the information about C operators, including syntax, precedence, associativity, and side effects.",
+      "examplesOfGood": "All operator tables are correct; no misstatements about undefined behavior; examples compile and run as described.",
+      "examplesOfBad": "Incorrect precedence chart; claims `=` can be used as a comparison; provides code that contains compilation errors."
+    }
+  ]
+}

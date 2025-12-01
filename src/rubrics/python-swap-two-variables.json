@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains the concept of swapping two variables in Python, including the underlying mechanics and alternatives.",
+      "examplesOfGood": "Provides a clear definition of swapping, explains why a temporary variable works, and demonstrates tuple unpacking with simple code snippets.",
+      "examplesOfBad": "Uses vague terms, skips the reason behind each step, or mixes up assignment semantics."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, and engagement when walking through the swap code examples.",
+      "examplesOfGood": "Speaks at a steady pace, emphasizes key syntax (e.g., '=', ',', '()'), and pauses before showing the result.",
+      "examplesOfBad": "Monotone, rushes through code, or uses filler words that obscure the logic."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of the lesson: introduction of the problem, explanation of the classic method, presentation of Pythonic tuple unpacking, and summary.",
+      "examplesOfGood": "Starts with a real‑world scenario, shows the three‑line temporary‑variable solution, then transitions to the one‑line tuple swap, ending with a recap of trade‑offs.",
+      "examplesOfBad": "Jumping between code snippets without clear transitions, or omitting the summary."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interactive elements such as asking learners to predict output, encouraging them to try variations, and checking understanding.",
+      "examplesOfGood": "Poses questions like 'What will be printed after this swap?' and invites students to modify the code for different data types.",
+      "examplesOfBad": "Delivers a lecture‑only monologue with no prompts or checks for comprehension."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of the Python syntax and the explanation of how swapping works.",
+      "examplesOfGood": "All code runs without errors, correctly demonstrates both temporary variable and tuple unpacking methods.",
+      "examplesOfBad": "Shows syntax errors, misstates that Python evaluates right‑to‑left, or claims the tuple method creates a temporary variable."
+    }
+  ]
+}

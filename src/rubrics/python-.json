@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains Python concepts, syntax, and idioms.",
+      "examplesOfGood": "Uses simple definitions; illustrates each concept with clear, runnable code snippets; explains why a construct is used.",
+      "examplesOfBad": "Provides vague explanations; mixes unrelated topics; uses jargon without definition."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, enthusiasm, and ability to convey Python ideas effectively.",
+      "examplesOfGood": "Clear, audible voice; varied tone to highlight important points; steady pace that allows learners to follow code examples.",
+      "examplesOfBad": "Monotone delivery; speaks too quickly or too slowly; excessive filler words that distract from the code."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of Python lessons: introduction → core concept → live coding example → summary and next steps.",
+      "examplesOfGood": "Starts with problem context, presents the syntax, demonstrates a live example, then recaps key takeaways and suggests practice tasks.",
+      "examplesOfBad": "Jumps between topics without transitions; presents code before explaining its purpose; lacks a concluding summary."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction with learners, prompting them to think, write code, and ask questions about Python.",
+      "examplesOfGood": "Poses open‑ended questions, encourages learners to predict output, uses interactive coding exercises, checks understanding frequently.",
+      "examplesOfBad": "Delivers a one‑way lecture; never asks for input or checks if learners can run the code themselves."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of Python syntax, semantics, and best‑practice recommendations.",
+      "examplesOfGood": "All code runs without errors; explanations align with the official Python documentation; follows PEP 8 style guidelines.",
+      "examplesOfBad": "Shows code with syntax errors; misstates language behavior; recommends deprecated modules or anti‑patterns."
+    }
+  ]
+}

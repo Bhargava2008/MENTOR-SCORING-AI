@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains Python concepts, such as data types, control flow, OOP, and libraries.",
+      "examplesOfGood": "Uses simple definitions; demonstrates with live code snippets; explains abstract ideas with concrete Python examples.",
+      "examplesOfBad": "Provides vague or ambiguous explanations; jumps between syntax and theory without clear linkage; uses jargon without clarification."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, energy, and ability to convey Python syntax and error messages effectively.",
+      "examplesOfGood": "Clear articulation of code; varied tone to emphasize key points; steady pace allowing learners to follow code execution.",
+      "examplesOfBad": "Monotone voice; speaks too fast causing missed parentheses; excessive filler words obscuring code explanation."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical organization of Python lessons: introduction, concept explanation, coding demonstration, hands‑on exercise, summary.",
+      "examplesOfGood": "Starts with problem statement, walks through solution step‑by‑step, highlights key Python constructs, ends with recap and next steps.",
+      "examplesOfBad": "Randomly shows code snippets without context; skips prerequisite concepts; no clear transition between topics."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction with learners, prompting them to write code, ask questions, and debug together.",
+      "examplesOfGood": "Poses coding challenges, asks learners to predict output, encourages pair‑programming, checks understanding through quick quizzes.",
+      "examplesOfBad": "One‑way lecture; never invites questions; no opportunities for learners to practice writing Python code."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of Python syntax, semantics, and best practices presented.",
+      "examplesOfGood": "Demonstrates correct syntax; explains nuances of Python version differences; follows PEP 8 conventions.",
+      "examplesOfBad": "Shows code with syntax errors; misstates behavior of built‑in functions; recommends outdated or insecure practices."
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains core Java concepts such as OOP principles, data types, and memory management.",
+      "examplesOfGood": "Uses simple definitions; illustrates abstract concepts with concrete Java code snippets and real‑world analogies.",
+      "examplesOfBad": "Provides vague or confusing explanations; jumps between topics without linking them to Java syntax or semantics."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, energy, and ability to keep learners focused during live coding sessions.",
+      "examplesOfGood": "Clear voice, varied tone, steady pace; pauses to let students follow code execution; uses screen annotations effectively.",
+      "examplesOfBad": "Monotone voice, speaks too fast or too slowly; excessive filler words; fails to highlight important parts of the code."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of lessons: introduction → concept explanation → coding example → walkthrough → summary and key takeaways.",
+      "examplesOfGood": "Starts with learning objectives, builds up from basic syntax to advanced features, uses smooth transitions between sections.",
+      "examplesOfBad": "Random jumping between topics; no clear sequence; omits summaries or recap of important Java constructs."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction with learners through questions, live coding challenges, and debugging exercises specific to Java.",
+      "examplesOfGood": "Asks probing questions about class design, encourages students to predict output, conducts pair‑programming or debugging drills.",
+      "examplesOfBad": "One‑way lecture with no checks for understanding; never invites students to write or modify Java code."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of Java language details, APIs, and best‑practice recommendations delivered during instruction.",
+      "examplesOfGood": "No factual mistakes; uses up‑to‑date Java versions; correctly explains exception handling, generics, and concurrency constructs.",
+      "examplesOfBad": "Incorrect syntax, outdated API usage, wrong explanations of memory model or thread safety."
+    }
+  ]
+}

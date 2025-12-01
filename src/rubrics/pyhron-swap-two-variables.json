@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains the concept of swapping two variables in Python, including the underlying idea of temporary storage or tuple unpacking.",
+      "examplesOfGood": "Uses simple definitions; shows both the temporary‑variable method and the Pythonic tuple unpacking method with clear step‑by‑step narration.",
+      "examplesOfBad": "Gives a vague explanation; mixes up the order of assignments; jumps between unrelated Python topics."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, and energy while demonstrating the swap operation, ensuring learners can follow the code on screen.",
+      "examplesOfGood": "Clear voice, varied tone when highlighting key lines, steady pace that allows viewers to read the code.",
+      "examplesOfBad": "Monotone voice, rushes through the code, excessive filler words that obscure the logic."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of the lesson: introduction → problem statement → two solution approaches → live coding → summary.",
+      "examplesOfGood": "Starts with a real‑world example, presents the temporary‑variable solution, then shows the concise tuple‑unpacking technique, using transitions between each part.",
+      "examplesOfBad": "Randomly jumps between syntax, prints, and unrelated topics; no clear intro or recap."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction with learners, prompting them to predict output, ask questions, or try the swap themselves.",
+      "examplesOfGood": "Asks, \"What will be the values after this line?\"; pauses for viewers to try the code in their own IDE; checks understanding before moving on.",
+      "examplesOfBad": "One‑way lecture with no questions; never invites learners to test the code."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of the presented code and explanations about variable swapping in Python.",
+      "examplesOfGood": "Shows syntactically correct Python, correctly explains why tuple unpacking works, and avoids off‑by‑one or naming errors.",
+      "examplesOfBad": "Provides code with syntax errors, misstates that `a, b = b, a` swaps without a temporary variable in older Python versions, or mixes up variable names."
+    }
+  ]
+}
