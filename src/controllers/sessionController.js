@@ -173,7 +173,7 @@ ${seg.text}`;
     // Save to DB
     await Session.findByIdAndUpdate(sessionId, {
       transcript,
-      srt: srtContent,
+      srt: JSON.stringify(segments),
       detectedLanguage: "English",
       pauses: pauseData,
       audioMetrics,
