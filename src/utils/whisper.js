@@ -1,32 +1,27 @@
-// utils/whisper.js
-const { exec } = require("child_process");
-const path = require("path");
+// src/services/whisper.js
+const fs = require("fs");
+const Groq = require("groq-sdk");
 
-exports.runWhisper = (audioPath, outputBase) => {
-  return new Promise((resolve, reject) => {
-    // Linux binary (Render)
-    const whisperBin = path.join(__dirname, "../models/whisper/main");
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-    // Whisper medium model
-    const modelPath = path.join(__dirname, "../models/whisper/ggml-medium.bin");
+exports.runWhisper = async (audioPath) => {
+  try {
+    const fileStream = fs.createReadStream(audioPath);
 
-    const audioAbs = path.resolve(audioPath);
-    const outputAbs = path.resolve(outputBase);
+    console.log("Sending audio/video to Groq Whisper...");
 
-    const command = `"${whisperBin}" -m "${modelPath}" -l en -f "${audioAbs}" -otxt -osrt -of "${outputAbs}"`;
-
-    console.log("Running Whisper:", command);
-
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error("❌ Whisper error:", stderr || error);
-        return reject(error);
-      }
-
-      resolve({
-        txt: outputAbs + ".txt",
-        srt: outputAbs + ".srt",
-      });
+    const response = await groq.audio.transcriptions.create({
+      file: fileStream,
+      model: "whisper-large-v3",
+      response_format: "verbose_json",
     });
-  });
+
+    return {
+      text: response.text,
+      segments: response.segments || [],
+    };
+  } catch (err) {
+    console.error("Groq Whisper Error:", err);
+    throw err;
+  }
 };

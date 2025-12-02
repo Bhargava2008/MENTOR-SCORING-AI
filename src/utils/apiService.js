@@ -1,7 +1,7 @@
 // utils/apiService.js
 class ApiService {
   constructor() {
-    this.baseURL = "https://mentor-scoring-ai.onrender.com"; // ✅ FIXED
+    this.baseURL = "https://mentor-scoring-ai.onrender.com";
   }
 
   async request(endpoint, options = {}) {

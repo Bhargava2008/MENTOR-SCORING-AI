@@ -102,9 +102,8 @@ exports.extractAudioFromVideo = async (req, res) => {
 };
 
 // ------------------------
-// GENERATE TRANSCRIPT + SRT + PAUSE METRICS
+// GENERATE TRANSCRIPT USING GROQ WHISPER API
 // ------------------------
-
 exports.generateTranscript = async (req, res) => {
   try {
     const { sessionId } = req.params;
@@ -119,84 +118,85 @@ exports.generateTranscript = async (req, res) => {
     }
 
     const audioPath = session.audioPath;
-    const transcriptBase = path.join(
-      __dirname,
-      "../transcripts",
-      Date.now().toString()
-    );
 
-    const { txt, srt } = await runWhisper(audioPath, transcriptBase);
+    const fileStream = fs.createReadStream(audioPath);
 
-    if (!fs.existsSync(txt) || !fs.existsSync(srt)) {
-      return res
-        .status(500)
-        .json({ error: "Whisper failed: missing output files" });
-    } // READ RAW FILES
+    const response = await groq.audio.transcriptions.create({
+      file: fileStream,
+      model: "whisper-large-v3",
+      response_format: "verbose_json",
+    });
 
-    let transcriptRaw = fs.readFileSync(txt, "utf-8").trim();
-    const srtContent = fs.readFileSync(srt, "utf-8").trim();
+    const transcriptText = response.text;
+    const segments = response.segments || [];
 
-    if (!transcriptRaw.length) {
+    if (!transcriptText || transcriptText.trim().length === 0) {
       return res.status(500).json({ error: "Transcript empty" });
-    } // CLEAN TRANSCRIPT
+    }
 
-    const transcript = cleanTranscript(transcriptRaw); // EXTRACT DURATION
+    // Clean transcript
+    const transcript = cleanTranscript(transcriptText);
 
-    const allTimestamps = srtContent.match(/\d{2}:\d{2}:\d{2},\d{3}/g);
+    // Compute duration from segments
     let durationSec = 0;
-
-    if (allTimestamps && allTimestamps.length >= 2) {
-      // Convert hh:mm:ss,ms → seconds
-      function timeToSec(t) {
-        const [h, m, s] = t.split(":");
-        const [sec, ms] = s.split(",");
-        return (
-          Number(h) * 3600 + Number(m) * 60 + Number(sec) + Number(ms) / 1000
-        );
-      }
-      const startSec = timeToSec(allTimestamps[0]);
-      const endSec = timeToSec(allTimestamps[allTimestamps.length - 1]);
-      durationSec = Math.max(1, endSec - startSec);
+    if (segments.length > 0) {
+      const start = segments[0].start;
+      const end = segments[segments.length - 1].end;
+      durationSec = Math.max(1, end - start);
     } else {
-      console.warn(
-        "⚠ Whisper SRT has no usable timestamps → using fallback duration"
-      );
       durationSec = Math.max(2, transcript.split(" ").length * 0.4);
-    } // PAUSE DETECTION
+    }
 
+    // Pause detection based on segments
     let pauseData = { totalPauses: 0, pauses: [] };
     try {
+      const srtContent = segments
+        .map((seg, i) => {
+          return `${i + 1}
+${format(seg.start)} --> ${format(seg.end)}
+${seg.text}`;
+        })
+        .join("\n\n");
+
       pauseData = detectPauses(srtContent) || pauseData;
     } catch (err) {
-      console.warn("⚠ Pause detection failed, continuing without pauses");
-    } // AUDIO METRICS
+      console.log("Pause detection failed:", err);
+    }
 
+    // Audio metrics
     const audioMetrics = calculateAudioMetrics(
       transcript,
       durationSec,
       pauseData
-    ); // SAVE ALL IN DB
+    );
 
+    // Save to DB
     await Session.findByIdAndUpdate(sessionId, {
       transcript,
       srt: srtContent,
       detectedLanguage: "English",
       pauses: pauseData,
       audioMetrics,
-    }); // SEND RESPONSE (using full session data structure)
+    });
 
     res.json({
-      message: "Transcript + timestamps generated successfully",
-      language: "English",
+      message: "Transcript generated successfully",
       transcript,
-      pauses: pauseData,
       audioMetrics,
+      pauses: pauseData,
+      segments,
     });
   } catch (err) {
-    console.error("generateTranscript ERROR:", err);
+    console.error("Groq Whisper transcript error:", err);
     res.status(500).json({ error: "Transcript generation failed" });
   }
 };
+
+// helper to format seconds → HH:MM:SS,ms
+function format(sec) {
+  const date = new Date(sec * 1000).toISOString().substr(11, 12);
+  return date.replace(".", ",");
+}
 
 // ------------------------
 // SAVE BODY LANGUAGE METRICS
