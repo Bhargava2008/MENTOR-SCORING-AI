@@ -5,7 +5,6 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
-const mime = require("mime");
 
 const https = require("https");
 
@@ -108,6 +107,7 @@ app.use(
     },
   })
 );
+
 app.use(express.static(path.join(__dirname)));
 
 // Routes
