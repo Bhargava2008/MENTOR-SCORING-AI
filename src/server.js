@@ -7,7 +7,12 @@ const path = require("path");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,POST",
+  })
+);
 
 app.use(
   "/uploads",
@@ -33,15 +38,8 @@ app.use("/tts", express.static(path.join(__dirname, "../uploads/tts")));
 // Transcripts
 app.use("/transcripts", express.static(path.join(__dirname, "../transcripts")));
 
-// Main static files
-app.use(express.static(__dirname));
-
 // Routes
 app.use("/session", require("./routes/sessionRoutes"));
-
-app.get(/^\/(?!session).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
 
 // Connect MongoDB
 mongoose

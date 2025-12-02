@@ -629,7 +629,7 @@
       // API Service Class
       class ApiService {
         constructor() {
-          this.baseURL = "http://localhost:5000";
+          this.baseURL = "https://mentor-scoring-ai.onrender.com";
         }
 
         async request(endpoint, options = {}) {
@@ -2113,7 +2113,8 @@
 
         // Convert backend path to accessible URL
         const normalizedPath = clipPath.replace(/\\/g, "/");
-        const videoUrl = `http://localhost:5000/${normalizedPath}`;
+        const videoUrl = `${apiService.baseURL}/${normalizedPath}`;
+
         console.log("Playing video from:", videoUrl);
 
         // Create a video element to play the clip
@@ -2333,10 +2334,11 @@
         console.log("Using audio path:", audioPath);
 
         // Create the URL
-        const audioUrl = `http://localhost:5000/${audioPath.replace(
+        const audioUrl = `https://mentor-scoring-ai.onrender.com/${audioPath.replace(
           /\\/g,
           "/"
         )}`;
+
         console.log("Audio URL:", audioUrl);
 
         // Create audio element
