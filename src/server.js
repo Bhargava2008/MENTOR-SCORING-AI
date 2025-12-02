@@ -5,6 +5,20 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 
+const folders = [
+  path.join(__dirname, "../uploads"),
+  path.join(__dirname, "../uploads/audio"),
+  path.join(__dirname, "../uploads/evidence"),
+  path.join(__dirname, "../uploads/tts"),
+  path.join(__dirname, "../transcripts"),
+];
+
+folders.forEach((folder) => {
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder, { recursive: true });
+  }
+});
+
 const app = express();
 app.use(express.json());
 app.use(
