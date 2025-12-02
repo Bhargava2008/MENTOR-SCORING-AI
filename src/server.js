@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
+const fs = require("fs");
 
 const folders = [
   path.join(__dirname, "../uploads"),
