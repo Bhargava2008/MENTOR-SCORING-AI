@@ -5,6 +5,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
+const mime = require("mime");
 
 const https = require("https");
 
@@ -97,6 +98,16 @@ app.use("/tts", express.static(path.join(__dirname, "../uploads/tts")));
 // Transcripts
 app.use("/transcripts", express.static(path.join(__dirname, "../transcripts")));
 
+app.use(
+  "/tts",
+  express.static(path.join(__dirname, "../uploads/tts"), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".mp3")) {
+        res.setHeader("Content-Type", "audio/mpeg");
+      }
+    },
+  })
+);
 app.use(express.static(path.join(__dirname)));
 
 // Routes
