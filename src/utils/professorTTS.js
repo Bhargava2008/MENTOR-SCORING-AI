@@ -52,7 +52,8 @@ exports.generateInstructorAudio = async function (scoreReport, sessionId) {
 
     const [response] = await client.synthesizeSpeech(request);
 
-    const ttsFolder = path.join("uploads", "tts");
+    const ttsFolder = path.join(__dirname, "..", "uploads", "tts");
+
     if (!fs.existsSync(ttsFolder)) fs.mkdirSync(ttsFolder, { recursive: true });
 
     const outputFile = path.join(ttsFolder, `${sessionId}_mentor_feedback.mp3`);
