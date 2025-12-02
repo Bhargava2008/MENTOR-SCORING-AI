@@ -2334,10 +2334,10 @@
         console.log("Using audio path:", audioPath);
 
         // Create the URL
-        const audioUrl = `https://mentor-scoring-ai.onrender.com/${audioPath.replace(
-          /\\/g,
-          "/"
-        )}`;
+        const audioUrl = `https://mentor-scoring-ai.onrender.com/tts/${audioPath
+          .replace(/\\/g, "/")
+          .split("/")
+          .pop()}`;
 
         console.log("Audio URL:", audioUrl);
 
