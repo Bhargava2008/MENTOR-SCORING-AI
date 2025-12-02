@@ -6,6 +6,50 @@ const mongoose = require("mongoose");
 const path = require("path");
 const fs = require("fs");
 
+const https = require("https");
+
+const whisperDir = path.join(__dirname, "../models/whisper");
+const whisperModelPath = path.join(whisperDir, "ggml-medium.bin");
+const whisperDownloadURL =
+  "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.bin";
+
+// Ensure model folder exists
+if (!fs.existsSync(whisperDir)) {
+  fs.mkdirSync(whisperDir, { recursive: true });
+  console.log("📁 Created whisper model directory");
+}
+
+// Download model if missing
+function downloadWhisperModel() {
+  if (fs.existsSync(whisperModelPath)) {
+    console.log("✔ Whisper medium model already exists");
+    return;
+  }
+
+  console.log("⬇ Downloading Whisper Medium model (1.4GB)...");
+
+  const file = fs.createWriteStream(whisperModelPath);
+
+  https.get(whisperDownloadURL, (response) => {
+    if (response.statusCode !== 200) {
+      console.error(
+        "❌ Failed to download whisper model:",
+        response.statusCode
+      );
+      return;
+    }
+
+    response.pipe(file);
+
+    file.on("finish", () => {
+      file.close();
+      console.log("✔ Whisper medium model downloaded");
+    });
+  });
+}
+
+downloadWhisperModel();
+
 const folders = [
   path.join(__dirname, "../uploads"),
   path.join(__dirname, "../uploads/audio"),
@@ -52,6 +96,8 @@ app.use("/tts", express.static(path.join(__dirname, "../uploads/tts")));
 
 // Transcripts
 app.use("/transcripts", express.static(path.join(__dirname, "../transcripts")));
+
+app.use(express.static(path.join(__dirname)));
 
 // Routes
 app.use("/session", require("./routes/sessionRoutes"));

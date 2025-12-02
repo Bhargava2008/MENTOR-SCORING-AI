@@ -119,7 +119,11 @@ exports.generateTranscript = async (req, res) => {
     }
 
     const audioPath = session.audioPath;
-    const transcriptBase = `transcripts/${Date.now()}`; // RUN WHISPER
+    const transcriptBase = path.join(
+      __dirname,
+      "../transcripts",
+      Date.now().toString()
+    );
 
     const { txt, srt } = await runWhisper(audioPath, transcriptBase);
 
