@@ -2,14 +2,14 @@ const fs = require("fs");
 const path = require("path");
 const textToSpeech = require("@google-cloud/text-to-speech");
 
-// ✅ Explicitly load credentials
-const credentialsPath = path.join(__dirname, "..", "google-credentials.json");
+let credentials;
 
-if (!fs.existsSync(credentialsPath)) {
-  console.error("❌ google-credentials.json NOT FOUND at:", credentialsPath);
+try {
+  credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+} catch (err) {
+  console.error("❌ GOOGLE_CREDENTIALS_JSON env variable missing or invalid");
+  process.exit(1);
 }
-
-const credentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
 
 const client = new textToSpeech.TextToSpeechClient({
   credentials,
