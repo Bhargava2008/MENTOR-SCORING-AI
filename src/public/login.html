@@ -1,0 +1,358 @@
+<!-- public/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Mentor Scoring AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+    <style>
+      /* Copy all your existing CSS styles from index.html here */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e8f1f2 0%, #d4e4e7 100%);
+        color: #0a3d62;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      :root {
+        --primary: #0a3d62;
+        --secondary: #1b98e0;
+        --accent: #f6b93b;
+        --bg: #e8f1f2;
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --warning: #e67e22;
+      }
+
+      .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        padding: 2rem;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        text-decoration: none;
+        font-size: 1rem;
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(10, 61, 98, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        margin: 8px 0 20px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(27, 152, 224, 0.2);
+      }
+
+      .logo-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .logo-header h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+      }
+
+      .logo-header span {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+
+      .auth-links {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .auth-links a {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .auth-links a:hover {
+        text-decoration: underline;
+      }
+
+      .alert {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        display: none;
+      }
+
+      .alert-error {
+        background: #fee;
+        color: var(--danger);
+        border: 1px solid #fcc;
+      }
+
+      .alert-success {
+        background: #efe;
+        color: var(--success);
+        border: 1px solid #cfc;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .user-type-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+      }
+
+      .user-type-btn {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid var(--glass-border);
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+
+      .user-type-btn:hover {
+        border-color: var(--secondary);
+      }
+
+      .user-type-btn.active {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: white;
+      }
+
+      .user-type-btn i {
+        display: block;
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+      }
+
+      @media (max-width: 768px) {
+        .glass-card {
+          padding: 1.5rem;
+        }
+
+        .logo-header h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glass-card">
+      <div class="logo-header">
+        <span>🎓</span>
+        <h1>Mentor Scoring AI</h1>
+        <p>Login to your account</p>
+      </div>
+
+      <div class="alert" id="alert-message"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-input"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="login-btn">
+          <span id="btn-text">Login</span>
+        </button>
+
+        <div class="auth-links">
+          <p>
+            Don't have an account?
+            <a href="register.html">Sign up here</a>
+          </p>
+          <p>
+            <a href="index.html">← Back to Home</a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <!-- In login.html, before closing </body> tag -->
+    <script src="js/auth.js"></script>
+    <script>
+      // Login form handler
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const loginBtn = document.getElementById("login-btn");
+          const btnText = document.getElementById("btn-text");
+          const alert = document.getElementById("alert-message");
+
+          // Show loading
+          loginBtn.disabled = true;
+          btnText.innerHTML = '<div class="loading"></div> Logging in...';
+
+          try {
+            const result = await authService.login(email, password);
+
+            // Show success message
+            alert.textContent = "Login successful! Redirecting...";
+            alert.className = "alert alert-success";
+            alert.style.display = "block";
+
+            // Redirect based on user type
+            setTimeout(() => {
+              if (result.user.userType === "institution_admin") {
+                window.location.href = "institution-dashboard.html";
+              } else {
+                window.location.href = "dashboard.html";
+              }
+            }, 1000);
+          } catch (error) {
+            // Show error message
+            alert.textContent = error.message;
+            alert.className = "alert alert-error";
+            alert.style.display = "block";
+
+            // Reset button
+            loginBtn.disabled = false;
+            btnText.textContent = "Login";
+          }
+        });
+
+      // Check if already logged in
+      if (authService.isLoggedIn()) {
+        const user = authService.getUser();
+        if (user.userType === "institution_admin") {
+          window.location.href = "institution-dashboard.html";
+        } else {
+          window.location.href = "dashboard.html";
+        }
+      }
+    </script>
+  </body>
+</html>

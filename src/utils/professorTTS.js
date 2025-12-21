@@ -1,49 +1,42 @@
-// utils/professorTTS.js
-const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs");
 const path = require("path");
+const textToSpeech = require("@google-cloud/text-to-speech");
 
-// Load Google Credentials directly from ENV
-let googleCredentials = {};
+// ✅ Explicitly load credentials
+const credentialsPath = path.join(__dirname, "..", "google-credentials.json");
 
-try {
-  googleCredentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
-  console.log("✅ GOOGLE_CREDENTIALS loaded from env");
-} catch (err) {
-  console.error("❌ Invalid GOOGLE_CREDENTIALS env:", err.message);
+if (!fs.existsSync(credentialsPath)) {
+  console.error("❌ google-credentials.json NOT FOUND at:", credentialsPath);
 }
 
-// Initialize client
+const credentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
+
 const client = new textToSpeech.TextToSpeechClient({
-  credentials: googleCredentials,
+  credentials,
 });
 
-// Generate instructor audio
-exports.generateInstructorAudio = async function (scoreReport, sessionId) {
+async function generateInstructorAudio(text, sessionId) {
   try {
-    console.log("🎓 Generating Professor Feedback Audio...");
+    console.log("🎤 generateInstructorAudio CALLED");
+    console.log("Session:", sessionId);
+    console.log("Text length:", text?.length);
 
-    const correctedText =
-      scoreReport.improvementPlan?.correctedVersion ||
-      "Improve clarity and reduce filler words for more effective teaching.";
+    if (!text || !sessionId) {
+      throw new Error("Text or sessionId missing for TTS");
+    }
 
-    const ssml = `
-<speak>
-  <prosody rate="medium">
-    Your teaching score is ${scoreReport.finalScore.toFixed(
-      1
-    )}. Here is an improved explanation.
-  </prosody>
-  <break time="500ms"/>
-  <prosody rate="medium">${cleanText(correctedText)}</prosody>
-</speak>`;
+    const outputDir = path.join(__dirname, "..", "uploads", "tts");
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    const outputFile = path.join(outputDir, `feedback_${sessionId}.mp3`);
 
     const request = {
-      input: { ssml },
+      input: { text },
       voice: {
-        languageCode: "en-US",
-        name: "en-US-Neural2-F",
-        ssmlGender: "FEMALE",
+        languageCode: "en-IN",
+        ssmlGender: "NEUTRAL",
       },
       audioConfig: {
         audioEncoding: "MP3",
@@ -52,22 +45,17 @@ exports.generateInstructorAudio = async function (scoreReport, sessionId) {
 
     const [response] = await client.synthesizeSpeech(request);
 
-    const ttsFolder = path.join(__dirname, "..", "uploads", "tts");
-
-    if (!fs.existsSync(ttsFolder)) fs.mkdirSync(ttsFolder, { recursive: true });
-
-    const outputFile = path.join(ttsFolder, `${sessionId}_mentor_feedback.mp3`);
     fs.writeFileSync(outputFile, response.audioContent, "binary");
 
-    console.log("✅ TTS Audio saved:", outputFile);
-    return outputFile;
-  } catch (err) {
-    console.error("❌ Professor TTS Error:", err.message);
-    return null;
-  }
-};
+    console.log("✅ Instructor feedback audio saved:", outputFile);
 
-// Clean text for SSML
-function cleanText(text) {
-  return text.replace(/[&<>]/g, "").replace(/\s+/g, " ").trim();
+    return `/uploads/tts/feedback_${sessionId}.mp3`;
+  } catch (error) {
+    console.error("❌ generateInstructorAudio failed:", error.message);
+    throw error;
+  }
 }
+
+module.exports = {
+  generateInstructorAudio,
+};

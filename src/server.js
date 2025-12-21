@@ -1,4 +1,4 @@
-// server.js
+// server.js - ADD THESE UPDATES
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -13,17 +13,18 @@ app.use(express.json());
 app.use(
   cors({
     origin: "*",
-    methods: "GET,POST",
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
   })
 );
 
 // ---------- ENSURE FOLDERS EXIST ----------
 const folders = [
-  path.join(__dirname, "../uploads"),
-  path.join(__dirname, "../uploads/audio"),
-  path.join(__dirname, "../uploads/evidence"),
-  path.join(__dirname, "../uploads/tts"),
-  path.join(__dirname, "../transcripts"),
+  path.join(__dirname, "uploads"),
+  path.join(__dirname, "uploads/audio"),
+  path.join(__dirname, "uploads/evidence"),
+  path.join(__dirname, "uploads/tts"),
+  path.join(__dirname, "transcripts"),
 ];
 
 folders.forEach((folder) => {
@@ -33,52 +34,52 @@ folders.forEach((folder) => {
 });
 
 // ---------- STATIC ROUTES ----------
+// ---------- STATIC ROUTES ----------
+// Serve from BOTH locations
+app.use("/uploads", (req, res, next) => {
+  // Try src/uploads first
+  const srcPath = path.join(__dirname, "uploads", req.path);
+  const rootPath = path.join(__dirname, "..", "uploads", req.path);
 
-// Main uploads
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "../uploads"), {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith(".mp4")) res.setHeader("Content-Type", "video/mp4");
-      if (filePath.endsWith(".mp3"))
-        res.setHeader("Content-Type", "audio/mpeg");
-      if (filePath.endsWith(".wav")) res.setHeader("Content-Type", "audio/wav");
-    },
-  })
-);
+  console.log("Looking for:", req.path);
+  console.log("Trying src path:", srcPath);
+  console.log("Trying root path:", rootPath);
 
-// Evidence clips
-app.use(
-  "/evidence",
-  express.static(path.join(__dirname, "../uploads/evidence"))
-);
+  if (fs.existsSync(srcPath)) {
+    console.log("Found in src/uploads");
+    return res.sendFile(srcPath);
+  }
 
-// TTS AUDIO  ✔ FIXED — only ONE definition
-app.use(
-  "/tts",
-  express.static(path.join(__dirname, "../uploads/tts"), {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith(".mp3")) {
-        res.setHeader("Content-Type", "audio/mpeg");
-      }
-    },
-  })
-);
+  if (fs.existsSync(rootPath)) {
+    console.log("Found in root/uploads");
+    return res.sendFile(rootPath);
+  }
 
-// Transcripts
-app.use("/transcripts", express.static(path.join(__dirname, "../transcripts")));
+  console.log("File not found");
+  res.status(404).send("File not found");
+});
+
+// Keep these as backup
+app.use("/src/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/root/uploads", express.static(path.join(__dirname, "..", "uploads")));
+app.use("/tts", express.static(path.join(__dirname, "uploads/tts")));
+app.use("/transcripts", express.static(path.join(__dirname, "transcripts")));
+
+// ---------- API ROUTES ----------
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/institution", require("./routes/institutionRoutes"));
+app.use("/api/session", require("./routes/sessionRoutes"));
+console.log("📌 Loading report routes...");
+app.use("/api/reports", require("./routes/reportRoutes"));
 
 // Serve frontend
-app.use(express.static(path.join(__dirname)));
-
-// ---------- ROUTES ----------
-app.use("/session", require("./routes/sessionRoutes"));
-
+app.use(express.static(path.join(__dirname, "public")));
 // ---------- DATABASE ----------
 mongoose
   .connect(process.env.MONGO_URL)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("DB Error:", err));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.log("❌ DB Error:", err));
 
 // ---------- START SERVER ----------
-app.listen(5000, () => console.log("Server running on port 5000"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

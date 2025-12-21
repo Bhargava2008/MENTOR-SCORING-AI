@@ -1,0 +1,39 @@
+{
+  "dimensions": [
+    {
+      "name": "Concept Clarity",
+      "weight": 0.25,
+      "description": "How clearly the teacher explains basic operators (arithmetic, logical, comparison) and their usage.",
+      "examplesOfGood": "Provides simple definitions; demonstrates each operator with clear, relevant examples.",
+      "examplesOfBad": "Gives vague or ambiguous explanations; mixes different operator types without clear separation."
+    },
+    {
+      "name": "Delivery & Communication",
+      "weight": 0.25,
+      "description": "Voice clarity, pacing, energy, and engagement when presenting operator concepts.",
+      "examplesOfGood": "Clear articulation, varied tone, appropriate speed, and occasional emphasis on key symbols.",
+      "examplesOfBad": "Monotone delivery, too rapid or too slow, excessive filler words, or unclear pronunciation of symbols."
+    },
+    {
+      "name": "Content Structure",
+      "weight": 0.2,
+      "description": "Logical flow of the lesson: introduction → operator categories → examples → common pitfalls → summary.",
+      "examplesOfGood": "Starts with overview, groups operators logically, uses transitions, and ends with recap.",
+      "examplesOfBad": "Random ordering, jumps between topics, omits summary or transitions."
+    },
+    {
+      "name": "Student Engagement",
+      "weight": 0.15,
+      "description": "Interaction techniques to involve learners, such as asking questions, live coding, or quick quizzes on operators.",
+      "examplesOfGood": "Poses check‑understanding questions, invites learners to predict outcomes, uses interactive exercises.",
+      "examplesOfBad": "Pure lecture without pauses, no questions, no opportunities for practice."
+    },
+    {
+      "name": "Accuracy",
+      "weight": 0.15,
+      "description": "Correctness of the operator definitions, syntax, and example results.",
+      "examplesOfGood": "All operator symbols, precedence rules, and example calculations are correct.",
+      "examplesOfBad": "Incorrect truth tables, wrong precedence, mis‑typed symbols, or erroneous example outputs."
+    }
+  ]
+}

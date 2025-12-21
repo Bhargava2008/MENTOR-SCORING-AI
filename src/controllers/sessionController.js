@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const Groq = require("groq-sdk");
 const Session = require("../models/Session");
+const User = require("../models/User");
 const { runWhisper } = require("../utils/whisper");
 const { detectPauses } = require("../utils/pauseDetector");
 const { calculateAudioMetrics } = require("../utils/audioMetrics");
@@ -18,17 +19,18 @@ const ffmpeg = require("fluent-ffmpeg");
 // ------------------------
 // CREATE SESSION
 // ------------------------
+// Update your sessionController.js to this:
 exports.createSession = async (req, res) => {
   try {
+    const user = await User.findById(req.userId); // requires authMiddleware
     const session = await Session.create({
-      institutionCode: req.body.institutionCode,
+      userId: req.userId,
+      institutionId: user.institutionId,
+      institutionCode: req.body.institutionCode || user.institutionCode,
       mentorName: req.body.mentorName,
       role: req.body.role || "teacher",
     });
-    res.json({
-      message: "Session created",
-      sessionId: session._id,
-    });
+    res.json({ message: "Session created", sessionId: session._id });
   } catch (err) {
     res.status(500).json({ error: "Failed to create session" });
   }
@@ -393,21 +395,25 @@ ${JSON.stringify(bodyLanguageMetrics || {})}
     // -----------------------
     let audioFeedbackPath = null;
 
+    // In sessionController.js, after generating audio feedback:
     if (scoreReport.finalScore < 3.5) {
       const correctedText = scoreReport.improvementPlan?.correctedVersion;
 
       if (correctedText) {
+        // Generate and save audio feedback
         audioFeedbackPath = await generateInstructorAudio(
-          scoreReport,
+          correctedText,
           sessionId
         );
-        scoreReport.feedbackAudio = audioFeedbackPath;
-      } else {
-        scoreReport.feedbackAudio = null;
+
+        // Store relative path
+        const relativePath = `tts/feedback_${sessionId}.mp3`;
+        scoreReport.feedbackAudio = relativePath;
+
+        console.log("✅ Audio feedback saved at:", relativePath);
       }
-    } else {
-      scoreReport.feedbackAudio = null;
     }
+
     // ----------------------- // PHASE 3: EVIDENCE CLIPS // -----------------------
     let clips = [];
     if (
@@ -460,5 +466,41 @@ ${JSON.stringify(bodyLanguageMetrics || {})}
   } catch (err) {
     console.error("Scoring Error:", err);
     res.status(500).json({ error: "Scoring failed" });
+  }
+};
+
+exports.getSessionReport = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+
+    const session = await Session.findById(sessionId);
+
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    // Return the full report structure
+    const report = {
+      sessionId: session._id,
+      metadata: {
+        mentorName: session.mentorName,
+        role: session.role,
+        institutionCode: session.institutionCode,
+        timestamp: session.createdAt,
+      },
+      transcript: session.transcript,
+      audioMetrics: session.audioMetrics || {},
+      pauses: session.pauses || {},
+      bodyLanguageMetrics: session.bodyLanguageMetrics || {},
+      rubric: session.rubric || {},
+      scoreReport: session.scoreReport || {},
+      evidenceClips: session.clips || [],
+      feedbackAudio: session.feedbackAudio || null,
+    };
+
+    res.json(report);
+  } catch (error) {
+    console.error("Get session report error:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };

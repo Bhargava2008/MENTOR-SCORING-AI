@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Institution Dashboard - Mentor Scoring AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e8f1f2 0%, #d4e4e7 100%);
+        color: #0a3d62;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      /* Color Variables */
+      :root {
+        --primary: #0a3d62;
+        --secondary: #1b98e0;
+        --accent: #f6b93b;
+        --bg: #e8f1f2;
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --warning: #e67e22;
+      }
+
+      /* Buttons */
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        text-decoration: none;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(10, 61, 98, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Institution-specific styles */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 4px solid var(--secondary);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .user-table {
+        width: 100%;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-table th {
+        background: var(--primary);
+        color: white;
+        padding: 1rem;
+        text-align: left;
+      }
+
+      .user-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      .user-table tr:hover {
+        background: #f5f5f5;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--secondary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      .status-active {
+        background: #2ecc71;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-block;
+      }
+
+      .status-inactive {
+        background: #95a5a6;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-block;
+      }
+
+      .copy-code {
+        background: var(--accent);
+        color: var(--primary);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 1rem;
+      }
+
+      .copy-code:hover {
+        background: #f7c143;
+      }
+
+      /* Loading state */
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--primary);
+        animation: spin 1s ease-in-out infinite;
+        margin-right: 10px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Content will be loaded by JavaScript -->
+    </div>
+
+    <!-- Include auth.js first -->
+    <script src="js/auth.js"></script>
+
+    <script>
+      // Check authentication immediately
+      if (!window.authService || !authService.isLoggedIn()) {
+        window.location.href = "login.html";
+      }
+
+      const user = authService.getUser();
+      const institution = authService.getInstitution();
+
+      if (user.userType !== "institution_admin") {
+        window.location.href = "dashboard.html";
+      }
+
+      // Show loading state immediately
+      document.getElementById("app").innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+                <div style="text-align: center;">
+                    <div class="loading" style="border-top-color: var(--primary); width: 40px; height: 40px; margin: 0 auto 1rem;"></div>
+                    <p>Loading Institution Dashboard...</p>
+                </div>
+            </div>
+        `;
+
+      // Enhanced API Service with Institution endpoints
+      class EnhancedApiService {
+        constructor() {
+          this.baseURL =
+            window.location.hostname === "localhost"
+              ? "http://localhost:5000/api"
+              : "https://mentor-scoring-ai.onrender.com/api";
+          this.token = localStorage.getItem("token");
+        }
+
+        async getInstitutionDashboard() {
+          try {
+            const response = await fetch(
+              `${this.baseURL}/institution/dashboard`,
+              {
+                headers: {
+                  Authorization: `Bearer ${this.token}`,
+                },
+              }
+            );
+
+            if (response.status === 401) {
+              authService.logout();
+              throw new Error("Session expired");
+            }
+
+            if (!response.ok) {
+              throw new Error("Failed to load dashboard");
+            }
+
+            return await response.json();
+          } catch (error) {
+            console.error("Dashboard error:", error);
+            throw error;
+          }
+        }
+
+        async getUserSessions() {
+          const response = await fetch(
+            `${this.baseURL}/institution/my-sessions`,
+            {
+              headers: {
+                Authorization: `Bearer ${this.token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to load sessions");
+          }
+
+          return response.json();
+        }
+      }
+
+      // Initialize services
+      window.apiService = new EnhancedApiService();
+
+      // Render institution dashboard
+      async function renderInstitutionDashboard() {
+        try {
+          const data = await apiService.getInstitutionDashboard();
+
+          // Format data safely
+          const stats = data.stats || {
+            totalUsers: 0,
+            totalSessions: 0,
+            averageScore: 0,
+            activeUsers: 0,
+          };
+
+          const recentActivity = data.recentActivity || [];
+          const users = data.users || [];
+
+          document.getElementById("app").innerHTML = `
+                    <!-- Navigation -->
+                    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 2rem; cursor: pointer;" onclick="window.location.href='dashboard.html'">🎓</span>
+                            <div>
+                                <h3 style="margin: 0; color: var(--primary);">${
+                                  institution?.name || "Institution"
+                                }</h3>
+                                <p style="margin: 0; font-size: 0.9rem; color: #666;">Institution Dashboard</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            ${
+                              institution?.code
+                                ? `
+                            <button class="copy-code" onclick="copyInstitutionCode()">
+                                <i class="fas fa-copy"></i> Copy Code: ${institution.code}
+                            </button>
+                            `
+                                : ""
+                            }
+                            <div style="text-align: right;">
+                                <p style="margin: 0; font-size: 0.9rem;">${
+                                  user?.name || "Admin"
+                                }</p>
+                                <p style="margin: 0; font-size: 0.8rem; color: #666;">${
+                                  user?.email || ""
+                                }</p>
+                            </div>
+                            <button onclick="logout()" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.9rem;">
+                                Logout
+                            </button>
+                        </div>
+                    </nav>
+                    
+                    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+                        <!-- Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value">${
+                                  stats.totalUsers || 0
+                                }</div>
+                                <div class="stat-label">Total Teachers</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">${
+                                  stats.totalSessions || 0
+                                }</div>
+                                <div class="stat-label">Sessions Analyzed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">
+  ${(Number(stats.averageScore) || 0).toFixed(1)}/5
+</div>
+
+                                <div class="stat-label">Avg. Score</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value">${
+                                  stats.activeUsers || 0
+                                }</div>
+                                <div class="stat-label">Active Teachers</div>
+                            </div>
+                        </div>
+                        
+<!-- Recent Activity -->
+<div style="margin-bottom: 2rem;">
+  <h3 style="color: var(--primary); margin-bottom: 1rem;">Recent Activity</h3>
+
+  ${
+    recentActivity.length > 0
+      ? `
+    <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      ${recentActivity
+        .map(
+          (activity) => `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #eee;">
+            <div>
+              <strong>${activity.mentor || "Unknown"}</strong> (${
+            activity.role || "Teacher"
+          })
+              <div style="font-size: 0.9rem; color: #666;">
+                Score: ${activity.score || 0}/5 • ${
+            activity.date
+              ? new Date(activity.date).toLocaleDateString()
+              : "Unknown date"
+          }
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size: 0.9rem; color: #666;">
+                By ${activity.user || "Unknown"}
+              </span>
+
+            ${
+              activity.sessionId
+                ? `
+  <button
+    class="btn btn-outline"
+    style="padding:6px 14px; font-size:0.85rem"
+    onclick="viewSessionReport('${activity.sessionId}')"
+  >
+    View Analysis
+  </button>
+
+  <button
+    class="btn btn-outline"
+    style="padding:6px 10px; font-size:0.9rem"
+    title="Download PDF"
+    onclick="downloadSessionPDF('${activity.sessionId}')"
+  >
+    <i class="fas fa-download"></i>
+  </button>
+`
+                : ""
+            }
+
+            </div>
+          </div>
+        `
+        )
+        .join("")}
+    </div>
+  `
+      : `
+    <div style="background: white; padding: 2rem; border-radius: 12px; text-align: center; color: #666;">
+      <p>No recent activity yet</p>
+    </div>
+  `
+  }
+</div>
+
+                        
+                        <!-- Teachers Table -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h3 style="color: var(--primary); margin: 0;">Teachers</h3>
+                                <span style="color: #666; font-size: 0.9rem;">Total: ${
+                                  users.length
+                                }</span>
+                            </div>
+                            
+                            ${
+                              users.length > 0
+                                ? `
+                            <table class="user-table">
+                                <thead>
+                                    <tr>
+                                        <th>Teacher</th>
+                                        <th>Email</th>
+                                        <th>Last Login</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${users
+                                      .map((teacher) => {
+                                        const isActive = teacher.lastLogin
+                                          ? new Date() -
+                                              new Date(teacher.lastLogin) <
+                                            7 * 24 * 60 * 60 * 1000
+                                          : false;
+
+                                        return `
+                                        <tr>
+                                            <td style="display: flex; align-items: center; gap: 10px;">
+                                                <div class="user-avatar">
+                                                    ${
+                                                      teacher.name
+                                                        ?.charAt(0)
+                                                        .toUpperCase() || "U"
+                                                    }
+                                                </div>
+                                                <div>
+                                                    <strong>${
+                                                      teacher.name || "Unknown"
+                                                    }</strong><br>
+                                                    <small style="color: #666;">${
+                                                      teacher.userType ||
+                                                      "teacher"
+                                                    }</small>
+                                                </div>
+                                            </td>
+                                            <td>${teacher.email || ""}</td>
+                                            <td>${
+                                              teacher.lastLogin
+                                                ? new Date(
+                                                    teacher.lastLogin
+                                                  ).toLocaleDateString()
+                                                : "Never"
+                                            }</td>
+                                            <td>
+                                                <span class="${
+                                                  isActive
+                                                    ? "status-active"
+                                                    : "status-inactive"
+                                                }">
+                                                    ${
+                                                      isActive
+                                                        ? "Active"
+                                                        : "Inactive"
+                                                    }
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `;
+                                      })
+                                      .join("")}
+                                </tbody>
+                            </table>
+                            `
+                                : `
+                            <div style="background: white; padding: 3rem; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <div style="font-size: 4rem; color: #ddd; margin-bottom: 1rem;">👥</div>
+                                <h3 style="color: #666; margin-bottom: 0.5rem;">No Teachers Yet</h3>
+                                <p style="color: #888; margin-bottom: 1.5rem;">Share your institution code with teachers to get started</p>
+                                ${
+                                  institution?.code
+                                    ? `
+                                <button class="copy-code" onclick="copyInstitutionCode()" style="margin: 0 auto;">
+                                    <i class="fas fa-copy"></i> Copy Code: ${institution.code}
+                                </button>
+                                `
+                                    : ""
+                                }
+                            </div>
+                            `
+                            }
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                    <!-- Quick Actions -->
+<div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee;">
+  <h3 style="color: var(--primary); margin-bottom: 1rem;">Quick Actions</h3>
+
+  <!-- Existing Actions -->
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+    <button class="btn btn-primary" onclick="copyInstitutionCode()">
+      <i class="fas fa-copy"></i> Copy Institution Code
+    </button>
+
+    <button class="btn btn-outline" onclick="window.location.href='dashboard.html'">
+      <i class="fas fa-user"></i> Switch to Teacher View
+    </button>
+
+    <button class="btn btn-outline" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i> Back to Home
+    </button>
+  </div>
+
+  <!-- Bulk Reports -->
+  <div
+    style="
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 700px;
+    "
+  >
+    <h4 style="color: var(--primary); margin-bottom: 1rem;">
+      📊 Download Bulk Reports (PDF)
+    </h4>
+
+    <!-- Preset Buttons -->
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;">
+      <button class="btn btn-outline" onclick="downloadPresetReport('today')">
+        Today
+      </button>
+
+      <button class="btn btn-outline" onclick="downloadPresetReport('week')">
+        This Week
+      </button>
+
+      <button class="btn btn-outline" onclick="downloadPresetReport('month')">
+        This Month
+      </button>
+    </div>
+
+    <!-- Custom Date Range -->
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+      <input
+        type="date"
+        id="fromDate"
+        style="padding: 0.6rem; border-radius: 6px; border: 1px solid #ccc;"
+      />
+      <span style="color: #666;">to</span>
+      <input
+        type="date"
+        id="toDate"
+        style="padding: 0.6rem; border-radius: 6px; border: 1px solid #ccc;"
+      />
+
+      <button class="btn btn-primary" onclick="downloadCustomReport()">
+        <i class="fas fa-download"></i> Download PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+                    </main>
+                `;
+        } catch (error) {
+          console.error("Failed to load dashboard:", error);
+          document.getElementById("app").innerHTML = `
+                    <div style="text-align: center; padding: 4rem;">
+                        <h2 style="color: var(--danger);">Failed to load dashboard</h2>
+                        <p style="color: #666; margin: 1rem 0;">${error.message}</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                            <button onclick="window.location.reload()" class="btn btn-primary">
+                                <i class="fas fa-redo"></i> Retry
+                            </button>
+                            <button onclick="window.location.href='dashboard.html'" class="btn btn-outline">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                `;
+        }
+      }
+
+      // Utility functions
+      function copyInstitutionCode() {
+        if (!institution?.code) {
+          alert("No institution code available");
+          return;
+        }
+        navigator.clipboard
+          .writeText(institution.code)
+          .then(() => {
+            alert("Institution code copied to clipboard!");
+          })
+          .catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement("textarea");
+            textArea.value = institution.code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            alert("Institution code copied to clipboard!");
+          });
+      }
+
+      function logout() {
+        authService.logout();
+      }
+      function viewSessionReport(sessionId) {
+        if (!sessionId) return;
+        window.location.href = `report.html?sessionId=${sessionId}`;
+      }
+
+      async function downloadSessionPDF(sessionId) {
+        if (!sessionId) return;
+
+        const token = localStorage.getItem("token");
+
+        const baseURL =
+          window.location.hostname === "localhost"
+            ? "http://localhost:5000/api"
+            : "https://mentor-scoring-ai.onrender.com/api";
+
+        try {
+          const response = await fetch(
+            `${baseURL}/reports/session/${sessionId}/pdf`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to download PDF");
+          }
+
+          const blob = await response.blob();
+
+          // Create download
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `Session_Report_${sessionId}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          window.URL.revokeObjectURL(url);
+        } catch (err) {
+          alert("PDF download failed");
+          console.error(err);
+        }
+      }
+
+      async function downloadBulkPDF(from, to) {
+        const token = localStorage.getItem("token");
+
+        const baseURL =
+          window.location.hostname === "localhost"
+            ? "http://localhost:5000/api"
+            : "https://mentor-scoring-ai.onrender.com/api";
+
+        try {
+          const response = await fetch(
+            `${baseURL}/reports/institution/bulk/pdf?from=${from}&to=${to}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to download bulk PDF");
+          }
+
+          const blob = await response.blob();
+
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `Bulk_Report_${from}_to_${to}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        } catch (err) {
+          alert("Bulk PDF download failed");
+          console.error(err);
+        }
+      }
+
+      function downloadPresetReport(type) {
+        const now = new Date();
+        let from, to;
+
+        if (type === "today") {
+          from = to = now.toISOString().split("T")[0];
+        }
+
+        if (type === "week") {
+          const start = new Date(now);
+          start.setDate(now.getDate() - 7);
+          from = start.toISOString().split("T")[0];
+          to = now.toISOString().split("T")[0];
+        }
+
+        if (type === "month") {
+          const start = new Date(now.getFullYear(), now.getMonth(), 1);
+          from = start.toISOString().split("T")[0];
+          to = now.toISOString().split("T")[0];
+        }
+
+        downloadBulkPDF(from, to);
+      }
+
+      function downloadCustomReport() {
+        const from = document.getElementById("fromDate").value;
+        const to = document.getElementById("toDate").value;
+
+        if (!from || !to) {
+          alert("Please select both dates");
+          return;
+        }
+
+        downloadBulkPDF(from, to);
+      }
+
+      // Initialize dashboard
+      renderInstitutionDashboard();
+    </script>
+  </body>
+</html>

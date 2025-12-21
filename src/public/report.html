@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session Report | Mentor Scoring AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #e8f1f2 0%, #d4e4e7 100%);
+        color: #0a3d62;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+
+      :root {
+        --primary: #0a3d62;
+        --secondary: #1b98e0;
+        --accent: #f6b93b;
+        --bg: #e8f1f2;
+        --glass-bg: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --warning: #e67e22;
+      }
+
+      .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        padding: 2rem;
+        transition: transform 0.3s ease;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        text-decoration: none;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        box-shadow: 0 4px 15px rgba(10, 61, 98, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn-outline:hover {
+        background: var(--primary);
+        color: white;
+      }
+
+      /* Navigation Styles */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid var(--glass-border);
+      }
+
+      .nav-links-container {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .nav-link {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--primary);
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        padding: 0.5rem;
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        opacity: 1;
+        color: var(--secondary);
+      }
+
+      .nav-header {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+      }
+
+      .nav-header span {
+        font-size: 1.7rem;
+      }
+
+      /* Back Button */
+      .back-btn-container {
+        margin-left: 1rem;
+      }
+
+      /* Dashboard Layout */
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Metric Cards */
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin: 0.5rem 0;
+      }
+
+      .metric-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .body-language-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .body-metric-card {
+        background: rgba(255, 255, 255, 0.7);
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        border-left: 4px solid var(--secondary);
+      }
+
+      .conceptual-gap-card {
+        background: #fff3cd;
+        border-radius: 8px;
+        border-left: 4px solid var(--warning);
+        margin-bottom: 1rem;
+        overflow: hidden;
+      }
+
+      .gap-header {
+        background: var(--warning);
+        color: white;
+        padding: 0.8rem 1rem;
+        font-weight: 600;
+      }
+
+      .gap-content {
+        padding: 1rem;
+      }
+
+      .grid-2-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .grid-auto-fit {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 1000px) {
+        .dashboard-layout {
+          grid-template-columns: 1fr;
+        }
+        .grid-2-col {
+          grid-template-columns: 1fr;
+        }
+        .nav-links-container {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .glass-card {
+          padding: 1.5rem;
+        }
+        nav {
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
+          padding: 1rem 2rem;
+          background: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(10px);
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          border-bottom: 1px solid var(--glass-border);
+        }
+        .back-btn-container {
+          justify-self: start;
+        }
+
+        .nav-links-container {
+          justify-self: center;
+        }
+
+        .desktop-user-info {
+          justify-self: end;
+        }
+
+        .container {
+          padding: 0 15px;
+        }
+        .back-btn-container {
+          margin-left: 0.5rem;
+        }
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+        color: var(--primary);
+        opacity: 0.8;
+      }
+
+      /* Loading */
+      .loading {
+        text-align: center;
+        padding: 4rem;
+        font-size: 1.2rem;
+        color: #555;
+      }
+
+      /* User info */
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--secondary), var(--primary));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .user-details {
+        text-align: right;
+      }
+
+      .user-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .user-email {
+        font-size: 0.8rem;
+        color: #666;
+      }
+
+      .logout-btn {
+        margin-left: 10px;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="loading">Loading session report...</div>
+    </div>
+
+    <script>
+      class ApiService {
+        constructor() {
+          this.baseURL =
+            window.location.hostname === "localhost"
+              ? "http://localhost:5000"
+              : "https://mentor-scoring-ai.onrender.com";
+
+          this.token = localStorage.getItem("token");
+          this.user = JSON.parse(localStorage.getItem("user") || "{}");
+          this.institution = JSON.parse(
+            localStorage.getItem("institution") || "null"
+          );
+        }
+
+        async request(endpoint, options = {}) {
+          try {
+            const headers = {
+              "Content-Type": "application/json",
+              ...options.headers,
+            };
+
+            if (this.token) {
+              headers["Authorization"] = `Bearer ${this.token}`;
+            }
+
+            const response = await fetch(`${this.baseURL}${endpoint}`, {
+              headers,
+              ...options,
+            });
+
+            if (response.status === 401) {
+              this.logout();
+              throw new Error("Session expired. Please login again.");
+            }
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+          } catch (error) {
+            console.error("API request failed:", error);
+            throw error;
+          }
+        }
+
+        logout() {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.removeItem("institution");
+          window.location.href = "login.html";
+        }
+
+        isLoggedIn() {
+          return !!this.token;
+        }
+
+        // Get session report
+        async getSessionReport(sessionId) {
+          return this.request(`/api/session/${sessionId}/report`);
+        }
+      }
+
+      window.apiService = new ApiService();
+    </script>
+
+    <script>
+      // Component: Navigation with Back Button
+      function Navigation(currentPage, userDetails) {
+        const user = apiService.user;
+        const userInitial = user?.name?.charAt(0).toUpperCase() || "U";
+
+        return `
+                <nav>
+                  <div class="back-btn-container">
+                    <button class="btn btn-outline" onclick="goDashboard()" style="padding: 0.6rem 1.2rem; font-size: 0.9rem">
+                      <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                  </div>
+
+                  
+
+                  <div class="nav-links-container">
+                    <a class="nav-link ${
+                      currentPage === "dashboard" ? "active" : ""
+                    }"
+                        onclick="app.setPage('dashboard')">
+                        Dashboard
+                    </a>
+                    <a class="nav-link ${
+                      currentPage === "transcript" ? "active" : ""
+                    }"
+                        onclick="app.setPage('transcript')">
+                        Transcript
+                    </a>
+                    <a class="nav-link ${
+                      currentPage === "bodylanguage" ? "active" : ""
+                    }"
+                        onclick="app.setPage('bodylanguage')">
+                        Body Language
+                    </a>
+                    <a class="nav-link ${
+                      currentPage === "conceptualgaps" ? "active" : ""
+                    }"
+                        onclick="app.setPage('conceptualgaps')">
+                        Conceptual Gaps
+                    </a>
+                    <a class="nav-link ${
+                      currentPage === "evidence" ? "active" : ""
+                    }"
+                        onclick="app.setPage('evidence')">
+                        Evidence
+                    </a>
+                    <a class="nav-link ${
+                      currentPage === "feedback" ? "active" : ""
+                    }"
+                        onclick="app.setPage('feedback')">
+                        Feedback
+                    </a>
+                  </div>
+
+                  <div class="desktop-user-info">
+                    <div class="user-info">
+                      <div class="user-details">
+                        <div class="user-name">${user?.name || "User"}</div>
+                        <div class="user-email">${user?.email || ""}</div>
+                      </div>
+                      <div class="user-avatar">${userInitial}</div>
+                      <button class="btn btn-outline logout-btn" onclick="apiService.logout()">
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </nav>
+              `;
+      }
+
+      // Component: Footer
+      function Footer() {
+        return `
+                <footer>
+                  <p>&copy; 2025 Mentor Scoring AI. All rights reserved.</p>
+                  <span style="background: var(--accent); color: var(--primary); padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold">
+                    Powered by MediaPipe & GenAI
+                  </span>
+                </footer>
+              `;
+      }
+
+      // Main Application for Report Page
+      const app = {
+        currentPage: "dashboard",
+        analysisData: null,
+        userDetails: null,
+        sessionId: null,
+
+        init() {
+          // Check if we have a session ID in URL
+          this.sessionId = this.getSessionIdFromURL();
+          if (!this.sessionId) {
+            this.showError("No session ID found in URL");
+            return;
+          }
+
+          // Check authentication
+          if (!apiService.isLoggedIn()) {
+            this.showError("Please login first");
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 2000);
+            return;
+          }
+
+          // Store session ID in localStorage for dashboard access
+          this.saveSessionToDashboard();
+
+          // Fetch the report
+          this.fetchReport(this.sessionId);
+        },
+
+        getSessionIdFromURL() {
+          const params = new URLSearchParams(window.location.search);
+          return params.get("sessionId");
+        },
+
+        saveSessionToDashboard() {
+          // Get existing sessions
+          let savedSessions = JSON.parse(
+            localStorage.getItem("userSessions") || "[]"
+          );
+
+          // Add current session if not already present
+          if (
+            this.sessionId &&
+            !savedSessions.some((s) => s.id === this.sessionId)
+          ) {
+            savedSessions.push({
+              id: this.sessionId,
+              date: new Date().toISOString(),
+              // Other data will be added after fetching report
+            });
+
+            localStorage.setItem("userSessions", JSON.stringify(savedSessions));
+          }
+        },
+
+        async fetchReport(sessionId) {
+          try {
+            console.log("Fetching report for session:", sessionId);
+            const data = await apiService.getSessionReport(sessionId);
+            console.log("Report data received:", data);
+            this.analysisData = data;
+
+            // Extract user details from metadata
+            if (data.metadata) {
+              this.userDetails = {
+                mentorName: data.metadata.mentorName,
+                role: data.metadata.role,
+                institutionCode: data.metadata.institutionCode,
+              };
+            }
+
+            // Update saved session with report data
+            this.updateSavedSession(data);
+
+            this.render();
+          } catch (error) {
+            console.error("Failed to fetch report:", error);
+            this.showError("Failed to load report. Please try again.");
+          }
+        },
+
+        updateSavedSession(reportData) {
+          let savedSessions = JSON.parse(
+            localStorage.getItem("userSessions") || "[]"
+          );
+
+          // Find and update the current session
+          const sessionIndex = savedSessions.findIndex(
+            (s) => s.id === this.sessionId
+          );
+          if (sessionIndex !== -1) {
+            savedSessions[sessionIndex] = {
+              ...savedSessions[sessionIndex],
+              mentorName: reportData.metadata?.mentorName || "Session",
+              role: reportData.metadata?.role || "Teacher",
+              score: reportData.scoreReport?.finalScore || 0,
+              date: reportData.metadata?.timestamp || new Date().toISOString(),
+              hasClips: (reportData.evidenceClips?.length || 0) > 0,
+              hasFeedbackAudio: !!reportData.feedbackAudio,
+            };
+
+            localStorage.setItem("userSessions", JSON.stringify(savedSessions));
+          }
+        },
+
+        setPage(page) {
+          this.currentPage = page;
+          this.render();
+        },
+
+        showError(message) {
+          document.getElementById("app").innerHTML = `
+                  <div style="text-align: center; padding: 4rem">
+                    <div class="glass-card" style="max-width: 500px; margin: 0 auto">
+                      <h2 style="color: var(--danger)">⚠️ Error</h2>
+                      <p>${message}</p>
+                      <button class="btn btn-primary" onclick="goDashboard()" style="margin-top: 1rem">
+                        Back to Dashboard
+                      </button>
+                    </div>
+                  </div>
+                `;
+        },
+
+        render() {
+          const appElement = document.getElementById("app");
+
+          if (!this.analysisData) {
+            appElement.innerHTML = `
+                    <div style="display: flex; flex-direction: column; min-height: 100vh">
+                      ${Navigation(this.currentPage, this.userDetails)}
+                      <main>
+                        <div class="loading">Loading session report...</div>
+                      </main>
+                      ${Footer()}
+                    </div>
+                  `;
+            return;
+          }
+
+          let content = "";
+          switch (this.currentPage) {
+            case "dashboard":
+              content = this.DashboardPage(this.analysisData);
+              break;
+            case "transcript":
+              content = this.TranscriptPage(this.analysisData);
+              break;
+            case "bodylanguage":
+              content = this.BodyLanguageMetricsPage(this.analysisData);
+              break;
+            case "conceptualgaps":
+              content = this.ConceptualGapsPage(this.analysisData);
+              break;
+            case "evidence":
+              content = this.EvidencePage(this.analysisData);
+              break;
+            case "feedback":
+              content = this.FeedbackPage(this.analysisData);
+              break;
+            default:
+              content = this.DashboardPage(this.analysisData);
+          }
+
+          appElement.innerHTML = `
+                  <div style="display: flex; flex-direction: column; min-height: 100vh">
+                    ${Navigation(this.currentPage, this.userDetails)}
+                    <main>${content}</main>
+                    ${Footer()}
+                  </div>
+                `;
+        },
+
+        // Component: Dashboard Page
+        DashboardPage(data) {
+          if (!data)
+            return '<div class="container"><div class="glass-card"><p>No data</p></div></div>';
+
+          const scoreReport = data.scoreReport || {};
+          const audioMetrics = data.audioMetrics || {};
+          const scores = scoreReport.scores || [];
+          const finalScore = scoreReport.finalScore || 0;
+
+          return `
+                  <div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 20px">
+                    <div class="dashboard-layout">
+                      <div style="display: flex; flex-direction: column; gap: 1.5rem">
+                        ${this.ScoreCard(finalScore)}
+
+                        <div class="glass-card">
+                          <h3>💡 Key Actions</h3>
+                          <div style="max-height: 400px; overflow-y: auto; margin-top: 1rem">
+                            ${
+                              scoreReport.improvementPlan?.teachingStrategy
+                                ?.length
+                                ? scoreReport.improvementPlan.teachingStrategy
+                                    .map(
+                                      (tip, idx) =>
+                                        `<div style="padding: 0.8rem; background: rgba(255,255,255,0.6); border-left: 4px solid var(--accent); margin-bottom: 0.8rem; border-radius: 4px; font-size: 0.85rem">
+                                        ${tip}
+                                      </div>`
+                                    )
+                                    .join("")
+                                : '<div style="padding: 1rem; text-align: center; color: #666; font-style: italic">No teaching strategy available</div>'
+                            }
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style="display: flex; flex-direction: column; gap: 2rem">
+                        <div class="glass-card">
+                          <h3>🎤 Delivery Metrics</h3>
+                          <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem">
+                            <div class="grid-2-col" style="gap: 1.5rem">
+                              <div>
+                                <h4 style="font-size:0.9rem; color:#666; margin-bottom:15px">Speech Analysis</h4>
+                                ${this.MetricBar(
+                                  "WPM",
+                                  audioMetrics.wordsPerMin || 0,
+                                  200
+                                )}
+                                ${this.MetricBar(
+                                  "Filler Words",
+                                  audioMetrics.fillerWords || 0,
+                                  20,
+                                  true
+                                )}
+                                ${this.MetricBar(
+                                  "Pause Count",
+                                  audioMetrics.pauseCount || 0,
+                                  10,
+                                  true
+                                )}
+                              </div>
+                              <div>
+                                <h4 style="font-size:0.9rem; color:#666; margin-bottom:15px">Quality Scores</h4>
+                                ${this.MetricBar(
+                                  "Pronunciation",
+                                  audioMetrics.pronunciationScore || 0,
+                                  10
+                                )}
+                                ${this.MetricBar(
+                                  "Complexity",
+                                  audioMetrics.sentenceComplexityScore || 0,
+                                  10
+                                )}
+                                ${this.MetricBar(
+                                  "Stability",
+                                  audioMetrics.speakingStabilityScore || 0,
+                                  10
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 style="margin-bottom: 1rem">Rubric Evaluation</h3>
+                          <div class="grid-auto-fit" style="margin-bottom: 2rem">
+                            ${
+                              scores.length > 0
+                                ? scores
+                                    .map((r, i) => {
+                                      const score = r.score || 0;
+                                      const dimension =
+                                        r.dimension || `Dimension ${i + 1}`;
+                                      const justification =
+                                        r.justification ||
+                                        "No justification provided";
+
+                                      return `
+                                      <div class="glass-card" style="padding: 1.5rem; border-top: 4px solid ${
+                                        score < 2.5
+                                          ? "var(--danger)"
+                                          : score < 3.5
+                                          ? "var(--warning)"
+                                          : "var(--success)"
+                                      }">
+                                        <h4 style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem">
+                                          ${dimension}
+                                        </h4>
+                                        <div style="font-size: 1.8rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem">
+                                          ${score.toFixed(1)}/5
+                                        </div>
+                                        <p style="font-size: 0.8rem; color: #444; line-height:1.4">
+                                          ${justification}
+                                        </p>
+                                      </div>
+                                    `;
+                                    })
+                                    .join("")
+                                : '<div class="glass-card"><p>No scores available</p></div>'
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `;
+        },
+
+        // Component: Score Card
+        ScoreCard(finalScore) {
+          const size = 180;
+          const strokeWidth = 15;
+          const radius = (size - strokeWidth) / 2;
+          const circumference = 2 * Math.PI * radius;
+
+          const displayScore = finalScore.toFixed(2);
+          const offset = circumference - (finalScore / 5) * circumference;
+
+          let scoreColor = "var(--danger)";
+          if (finalScore > 2.5) scoreColor = "var(--warning)";
+          if (finalScore > 3.5) scoreColor = "var(--success)";
+
+          return `
+                  <div class="glass-card" style="text-align: center; position: relative">
+                    <h3>Final Score</h3>
+                    <div style="position: relative; width: ${size}px; height: ${size}px; margin: 1rem auto">
+                      <svg width="${size}" height="${size}" style="transform: rotate(-90deg)">
+                        <circle stroke="#e6e6e6" stroke-width="${strokeWidth}" fill="transparent" r="${radius}" cx="${
+            size / 2
+          }" cy="${size / 2}" />
+                        <circle
+                          stroke="${scoreColor}"
+                          stroke-width="${strokeWidth}"
+                          stroke-dasharray="${circumference} ${circumference}"
+                          stroke-dashoffset="${offset}"
+                          stroke-linecap="round"
+                          fill="transparent"
+                          r="${radius}" cx="${size / 2}" cy="${size / 2}"
+                        />
+                      </svg>
+                      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; font-weight: bold; color: var(--primary)">
+                        ${displayScore}
+                      </div>
+                    </div>
+                    <span style="background: ${scoreColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold">
+                      ${
+                        finalScore < 2.5
+                          ? "Needs Improvement"
+                          : finalScore < 3.5
+                          ? "Satisfactory"
+                          : "Excellent"
+                      }
+                    </span>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 0.5rem">
+                      Scale: 0-5
+                    </div>
+                  </div>
+                `;
+        },
+
+        // Component: Metric Bar
+        MetricBar(label, value, max, inverse = false) {
+          const numValue = Number(value) || 0;
+          let effectiveMax = max;
+          let scoreLabel = "";
+
+          if (label === "WPM") {
+            effectiveMax = 200;
+            scoreLabel = " wpm";
+          } else if (label === "Filler Words") {
+            effectiveMax = 20;
+            scoreLabel = "";
+          } else if (label === "Pause Count") {
+            effectiveMax = 10;
+            scoreLabel = "";
+          } else if (label.includes("Score")) {
+            effectiveMax = 5;
+            scoreLabel = "/5";
+          } else {
+            effectiveMax = max || 10;
+          }
+
+          let pct = (numValue / effectiveMax) * 100;
+          if (inverse) {
+            pct = 100 - (numValue / effectiveMax) * 100;
+            if (pct < 0) pct = 0;
+          }
+          if (pct > 100) pct = 100;
+
+          let color = "var(--secondary)";
+          if (label.includes("Score")) {
+            if (numValue < 2.5) color = "var(--danger)";
+            else if (numValue < 3.5) color = "var(--warning)";
+            else color = "var(--success)";
+          } else if (label === "WPM") {
+            if (numValue < 100 || numValue > 180) color = "var(--danger)";
+            else if (numValue < 120 || numValue > 160) color = "var(--warning)";
+            else color = "var(--success)";
+          } else if (label === "Filler Words" || label === "Pause Count") {
+            if (numValue > 10) color = "var(--danger)";
+            else if (numValue > 5) color = "var(--warning)";
+            else color = "var(--success)";
+          } else {
+            if (pct < 30) color = "var(--danger)";
+            else if (pct < 60) color = "var(--warning)";
+            else color = "var(--success)";
+          }
+
+          let displayValue;
+          if (label === "WPM") {
+            displayValue = Math.round(numValue);
+          } else if (label.includes("Score")) {
+            displayValue = numValue.toFixed(1);
+          } else {
+            displayValue = Math.round(numValue);
+          }
+
+          return `
+                  <div style="margin-bottom:15px">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size:0.85rem">
+                      <span style="font-weight:500">${label}</span>
+                      <strong style="color: var(--primary)">${displayValue}${scoreLabel}</strong>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden">
+                      <div style="width: ${pct}%; height: 100%; background: ${color}; border-radius: 4px"></div>
+                    </div>
+                  </div>
+                `;
+        },
+
+        // Component: Transcript Page
+        TranscriptPage(data) {
+          if (!data)
+            return '<div class="container"><div class="glass-card"><p>No transcript</p></div></div>';
+
+          return `
+                  <div class="container" style="max-width: 1000px; margin: 2rem auto">
+                    <div class="glass-card">
+                      <h2>📝 Transcript</h2>
+                      <div style="margin-top:1rem; padding:1.5rem; background:rgba(255,255,255,0.5); border-radius:8px; line-height:1.8; font-size:1rem;">
+                        ${data.transcript || "No transcript available"}
+                      </div>
+                    </div>
+                  </div>
+                `;
+        },
+
+        // Component: Body Language Metrics Page
+        BodyLanguageMetricsPage(data) {
+          if (!data?.bodyLanguageMetrics)
+            return '<div class="container"><div class="glass-card"><p>No body language data</p></div></div>';
+
+          const metrics = data.bodyLanguageMetrics;
+          return `
+                  <div class="container" style="max-width: 1000px; margin: 2rem auto">
+                    <div class="glass-card">
+                      <h2>🧍 Body Language Metrics</h2>
+                      <div class="body-language-grid">
+                        ${Object.entries(metrics)
+                          .map(
+                            ([key, value]) => `
+                            <div class="body-metric-card">
+                              <div class="metric-label">${key
+                                .replace(/([A-Z])/g, " $1")
+                                .replace(/^./, (str) =>
+                                  str.toUpperCase()
+                                )}</div>
+                              <div class="metric-value">${value}/10</div>
+                            </div>
+                          `
+                          )
+                          .join("")}
+                      </div>
+                    </div>
+                  </div>
+                `;
+        },
+
+        // Component: Conceptual Gaps Page
+        ConceptualGapsPage(data) {
+          if (!data?.scoreReport?.conceptualGaps?.length)
+            return '<div class="container"><div class="glass-card"><p>No conceptual gaps</p></div></div>';
+
+          return `
+                  <div class="container" style="max-width: 900px; margin: 2rem auto">
+                    <div class="glass-card">
+                      <h2>🧠 Conceptual Gaps</h2>
+                      <div style="margin-top: 1rem">
+                        ${data.scoreReport.conceptualGaps
+                          .map(
+                            (gap, index) => `
+                            <div class="conceptual-gap-card">
+                              <div class="gap-header">
+                                Conceptual Gap ${index + 1}
+                              </div>
+                              <div class="gap-content">
+                                <strong style="color: var(--primary)">${
+                                  gap.gap
+                                }</strong>
+                                <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #444;">
+                                  <strong>Impact:</strong> ${gap.impact}
+                                </p>
+                              </div>
+                            </div>
+                          `
+                          )
+                          .join("")}
+                      </div>
+                    </div>
+                  </div>
+                `;
+        },
+
+        // Component: Evidence Page - FIXED VIDEO PLAYBACK
+        // Component: Evidence Page - USE CORRECT URL
+        EvidencePage(data) {
+          if (!data?.evidenceClips?.length)
+            return '<div class="container"><div class="glass-card"><p>No evidence clips</p></div></div>';
+
+          return `
+          <div class="container" style="max-width: 1200px; margin: 2rem auto">
+            <div class="glass-card">
+              <h2>🎥 Evidence Clips</h2>
+              <div class="grid-2-col" style="margin-top: 1.5rem">
+                ${data.evidenceClips
+                  .map((ev, i) => {
+                    const fileName = ev.path.split("\\").pop().split("/").pop();
+                    const sessionId = app.sessionId;
+
+                    // ✅ WORKING URL (URL 2)
+                    const videoUrl = `${apiService.baseURL}/uploads/evidence/${sessionId}/${fileName}`;
+
+                    return `
+                    <div class="glass-card" style="padding: 1.5rem;">
+                      <span style="background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem">
+                        Issue ${i + 1}
+                      </span>
+
+                      <h4 style="margin: 0.5rem 0;">${ev.issue}</h4>
+                      <p style="font-size: 0.85rem;">${ev.reason}</p>
+
+                      <button class="btn btn-primary"
+                        style="width:100%; margin-top:0.5rem"
+                        onclick="playVideo('${videoUrl}', '${ev.issue}')">
+                        ▶ Play Clip
+                      </button>
+                    </div>
+                  `;
+                  })
+                  .join("")}
+              </div>
+            </div>
+          </div>
+        `;
+        },
+
+        // Component: Feedback Page - FIXED AUDIO PLAYBACK
+        FeedbackPage(data) {
+          if (!data || !data.scoreReport || !data.scoreReport.improvementPlan) {
+            return `
+            <div class="container">
+              <div class="glass-card">
+                <p>No feedback available</p>
+              </div>
+            </div>
+          `;
+          }
+
+          const finalScore = data.scoreReport.finalScore || 0;
+          const plan = data.scoreReport.improvementPlan;
+          const showAudio = finalScore < 3.5;
+
+          return `
+          <div class="container" style="max-width:900px; margin:2rem auto">
+            <div class="glass-card">
+              <h2>🗣️ AI Coach Feedback</h2>
+
+              ${
+                showAudio
+                  ? `
+                <div class="glass-card" style="background:#ffebee; border:none; margin:1.5rem 0">
+                  <div style="display:flex; justify-content:space-between; align-items:center">
+                    <div>
+                      <h4 style="color:var(--danger)">⚠️ Needs Improvement</h4>
+                      <p style="font-size:0.9rem; color:#666">
+                        Score: ${finalScore.toFixed(1)}/5
+                      </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="playAudioFeedback()">
+                      ▶ Listen to Audio Feedback
+                    </button>
+                  </div>
+                </div>
+                `
+                  : `
+                <div style="background:#e8f5e9; padding:1.5rem; border-radius:8px; margin:1.5rem 0; text-align:center">
+                  <h4 style="color:var(--success)">Good Performance!</h4>
+                  <p style="color:#2e7d32; font-size:0.9rem">
+                    Score: ${finalScore.toFixed(1)}/5
+                  </p>
+                </div>
+                `
+              }
+
+              <div class="grid-2-col" style="margin-top:1.5rem">
+
+                <div class="glass-card" style="background:#ffebee; border:none">
+                  <h4 style="color:var(--danger)">Detected Issues</h4>
+                  <ul style="padding-left:20px; font-size:0.9rem">
+                    ${
+                      plan.issuesDetected && plan.issuesDetected.length
+                        ? plan.issuesDetected
+                            .map((i) => `<li>${i}</li>`)
+                            .join("")
+                        : "<li>No major issues detected</li>"
+                    }
+                  </ul>
+                </div>
+
+                <div class="glass-card" style="background:#e1f5fe; border:none">
+                  <h4 style="color:var(--secondary)">Corrected Version</h4>
+                  <p style="font-size:0.9rem; line-height:1.6">
+                    "${
+                      plan.correctedVersion || "No corrected version available"
+                    }"
+                  </p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        `;
+        },
+      };
+
+      // Global utility functions
+      function goDashboard() {
+        window.location.href = "dashboard.html";
+      }
+
+      function playVideo(videoUrl, title) {
+        console.log("Playing video:", videoUrl);
+
+        const video = document.createElement("video");
+        video.src = videoUrl;
+        video.controls = true;
+        video.style.width = "100%";
+        video.style.maxWidth = "90vw";
+        video.style.maxHeight = "80vh";
+        video.style.borderRadius = "8px";
+
+        const modal = document.createElement("div");
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.backgroundColor = "rgba(0,0,0,0.95)";
+        modal.style.display = "flex";
+        modal.style.justifyContent = "center";
+        modal.style.alignItems = "center";
+        modal.style.zIndex = "10000";
+
+        const closeBtn = document.createElement("button");
+        closeBtn.innerHTML = "&times;";
+        closeBtn.style.position = "absolute";
+        closeBtn.style.top = "15px";
+        closeBtn.style.right = "15px";
+        closeBtn.style.background = "rgba(255,255,255,0.2)";
+        closeBtn.style.color = "white";
+        closeBtn.style.border = "none";
+        closeBtn.style.borderRadius = "50%";
+        closeBtn.style.width = "40px";
+        closeBtn.style.height = "40px";
+        closeBtn.style.fontSize = "1.5rem";
+        closeBtn.style.cursor = "pointer";
+        closeBtn.onclick = function () {
+          document.body.removeChild(modal);
+          video.pause();
+        };
+
+        const container = document.createElement("div");
+        container.style.position = "relative";
+        container.style.padding = "20px";
+        container.style.width = "100%";
+        container.style.display = "flex";
+        container.style.justifyContent = "center";
+        container.style.alignItems = "center";
+
+        const titleEl = document.createElement("div");
+        titleEl.textContent = title || "Evidence Clip";
+        titleEl.style.color = "white";
+        titleEl.style.textAlign = "center";
+        titleEl.style.marginBottom = "10px";
+        titleEl.style.fontSize = "1.2rem";
+        titleEl.style.fontWeight = "bold";
+
+        container.appendChild(video);
+        modal.appendChild(titleEl);
+        modal.appendChild(container);
+        modal.appendChild(closeBtn);
+        document.body.appendChild(modal);
+
+        modal.onclick = function (e) {
+          if (e.target === modal) {
+            document.body.removeChild(modal);
+            video.pause();
+          }
+        };
+
+        container.onclick = function (e) {
+          e.stopPropagation();
+        };
+
+        video.play().catch((e) => {
+          console.log("Auto-play prevented:", e);
+          video.controls = true;
+        });
+      }
+
+      function playAudioFeedback() {
+        const audioUrl = `${apiService.baseURL}/uploads/tts/feedback_${app.sessionId}.mp3`;
+
+        console.log("Playing audio:", audioUrl);
+
+        const audio = document.createElement("audio");
+        audio.src = audioUrl;
+        audio.controls = true;
+        audio.autoplay = true;
+        audio.style.width = "100%";
+
+        // Modal
+        const modal = document.createElement("div");
+        modal.style.position = "fixed";
+        modal.style.top = "0";
+        modal.style.left = "0";
+        modal.style.width = "100%";
+        modal.style.height = "100%";
+        modal.style.background = "rgba(0,0,0,0.9)";
+        modal.style.display = "flex";
+        modal.style.justifyContent = "center";
+        modal.style.alignItems = "center";
+        modal.style.zIndex = "10000";
+
+        const container = document.createElement("div");
+        container.style.background = "white";
+        container.style.padding = "2rem";
+        container.style.borderRadius = "12px";
+        container.style.width = "90%";
+        container.style.maxWidth = "450px";
+        container.style.textAlign = "center";
+
+        const title = document.createElement("h3");
+        title.innerText = "🎧 AI Mentor Feedback";
+        title.style.marginBottom = "1rem";
+
+        const closeBtn = document.createElement("button");
+        closeBtn.innerHTML = "✕";
+        closeBtn.style.position = "absolute";
+        closeBtn.style.top = "20px";
+        closeBtn.style.right = "20px";
+        closeBtn.style.background = "rgba(255,255,255,0.2)";
+        closeBtn.style.color = "white";
+        closeBtn.style.border = "none";
+        closeBtn.style.borderRadius = "50%";
+        closeBtn.style.width = "40px";
+        closeBtn.style.height = "40px";
+        closeBtn.style.fontSize = "1.2rem";
+        closeBtn.style.cursor = "pointer";
+
+        closeBtn.onclick = () => {
+          audio.pause();
+          document.body.removeChild(modal);
+        };
+
+        container.appendChild(title);
+        container.appendChild(audio);
+        modal.appendChild(container);
+        modal.appendChild(closeBtn);
+        document.body.appendChild(modal);
+
+        modal.onclick = (e) => {
+          if (e.target === modal) {
+            audio.pause();
+            document.body.removeChild(modal);
+          }
+        };
+
+        audio.play().catch(() => {
+          alert("Audio file not found or cannot be played.");
+        });
+      }
+
+      // Debug function to test URLs
+      function testVideoUrl(url) {
+        console.log("Testing URL:", url);
+        fetch(url)
+          .then((response) => {
+            console.log("Response status:", response.status);
+            if (response.ok) {
+              alert(
+                `✅ Video is accessible!\nStatus: ${response.status}\nURL: ${url}`
+              );
+            } else {
+              alert(
+                `❌ Video not accessible!\nStatus: ${response.status}\nURL: ${url}`
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            alert(`❌ Error accessing video!\n${error.message}\nURL: ${url}`);
+          });
+      }
+
+      // Initialize the app
+      document.addEventListener("DOMContentLoaded", () => {
+        app.init();
+      });
+    </script>
+  </body>
+</html>

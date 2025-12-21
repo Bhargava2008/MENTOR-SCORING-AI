@@ -83,7 +83,14 @@ function extractClip(inputPath, startTime, endTime, outputPath) {
  * @returns {Array<Object>} List of created clip paths and their reasons.
  */
 exports.generateEvidenceClips = async (videoPath, evidenceArray, sessionId) => {
-  const outputDir = path.join("uploads", "evidence", sessionId);
+  const outputDir = path.join(
+    __dirname,
+    "..",
+    "..",
+    "uploads",
+    "evidence",
+    sessionId
+  );
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
