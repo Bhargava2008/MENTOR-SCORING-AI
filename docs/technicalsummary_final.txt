@@ -1,0 +1,299 @@
+Mentor Scoring AI – Technical Summary (Final Hackathon Build)
+1. Problem Statement
+
+Teacher evaluation today is largely manual, subjective, and inconsistent. Institutions and independent educators lack data-driven feedback on teaching quality, delivery, and engagement. Traditional observation-based evaluation is time-consuming and does not scale.
+
+Mentor Scoring AI solves this by providing an automated, AI-powered evaluation system that analyzes a teacher’s recorded session and produces objective, timestamped, actionable feedback across speech, body language, and conceptual clarity.
+
+2. Overall Approach
+
+The system follows a hybrid AI pipeline where:
+
+Body language is analyzed locally in the browser (privacy-first).
+
+Speech, content, and pedagogy are analyzed on the backend using AI.
+
+Results are unified into a mentor-grade evaluation report, including scores, evidence clips, improvement plans, and downloadable PDFs.
+
+3. AI & Analytics Components
+A. Body Language Analysis (Frontend – Client-side)
+
+Implemented using MediaPipe Pose, Face Mesh, and Hands.
+
+Runs entirely in the browser (no raw video upload for posture analysis).
+
+Extracted metrics:
+
+Eye contact consistency
+
+Posture stability
+
+Gesture activity
+
+Facial expressiveness
+
+Movement patterns
+
+Only numerical metrics are sent to the backend, ensuring privacy and efficiency.
+
+B. Speech-to-Text Processing (Backend)
+
+FFmpeg extracts audio from the uploaded video.
+
+Groq Whisper (large-v3) converts audio into:
+
+Clean transcript
+
+Word-level SRT timestamps
+
+Transcript is post-processed to remove noise and filler artifacts.
+
+C. Audio & Speech Metrics
+
+Derived from transcript + timestamps:
+
+Words Per Minute (WPM)
+
+Pause count and long-pause detection
+
+Filler word frequency
+
+Speaking stability
+
+Pacing quality
+
+These metrics help evaluate clarity, confidence, and delivery.
+
+D. Teaching Rubric Engine
+
+Each session is evaluated using a role-specific rubric (e.g., Python Instructor, C Programming, Math).
+
+If a rubric is missing:
+
+An LLM auto-generates a structured rubric JSON.
+
+Rubrics define:
+
+Evaluation dimensions
+
+Weightage
+
+Scoring criteria
+
+E. LLM-Based Scoring & Feedback Engine
+
+Inputs to the LLM:
+
+Clean transcript
+
+SRT timestamps
+
+Audio metrics
+
+Body language metrics
+
+Teaching rubric
+
+LLM outputs:
+
+0–5 score per rubric dimension
+
+Timestamp-based evidence for weaknesses
+
+Conceptual gaps in teaching
+
+Final weighted score
+
+Detailed improvement plan
+
+Corrected, teacher-ready explanation
+
+Strict prompting ensures valid JSON-only outputs.
+
+F. Evidence Clip Generation
+
+Using FFmpeg, the system extracts 2–6 second video clips based on problematic timestamps.
+
+These clips act as visual proof for feedback (e.g., pauses, filler clusters).
+
+Displayed directly in the report dashboard.
+
+G. Instructor Feedback Audio (Optional)
+
+Google Text-to-Speech generates mentor-style audio feedback.
+
+Triggered automatically for low-scoring sessions.
+
+Enables auditory coaching alongside visual reports.
+
+4. Platform Features & User Workflow
+A. Authentication & Roles
+
+Secure login system with JWT authentication.
+
+Supports:
+
+Individual teachers
+
+Institution admins
+
+Institution admins can manage multiple teachers under one code.
+
+B. End-to-End Workflow
+
+User logs in / registers
+
+Enters teaching role or subject
+
+Uploads teaching video
+
+MediaPipe runs body-language analysis locally
+
+Backend processes audio, transcript, and AI scoring
+
+Unified report is generated
+
+User views results in dashboard
+
+PDF report download available (single & bulk)
+
+C. Dashboards
+
+Teacher Dashboard
+
+Session history
+
+Scores and trends
+
+Evidence clips
+
+Audio feedback
+
+PDF download
+
+Institution Dashboard
+
+All teacher sessions
+
+Date-based filtering (today / week / month)
+
+Bulk PDF report generation
+
+Teacher-wise ranking table
+
+D. PDF Reporting System
+
+Professional, color-coded PDFs
+
+Includes:
+
+Teacher name & email
+
+Scores and metrics
+
+Improvement plan
+
+Bulk PDFs include:
+
+Individual teacher sections
+
+Final ranking table
+
+5. Technical Architecture
+A. Frontend
+
+HTML, CSS, Vanilla JavaScript (SPA-style)
+
+MediaPipe (client-side inference)
+
+Hosted on Vercel and Render (static serving)
+
+B. Backend
+
+Node.js + Express
+
+REST APIs for:
+
+Session lifecycle
+
+Video processing
+
+AI evaluation
+
+PDF generation
+
+Hosted on Render
+
+C. Database
+
+MongoDB Atlas
+
+Stores:
+
+Users & institutions
+
+Sessions
+
+Transcripts
+
+Metrics
+
+Rubrics
+
+Score reports
+
+Clip paths
+
+Feedback audio references
+
+6. Deployment & Scalability
+
+Backend deployed on Render
+
+Frontend deployed on Vercel
+
+Environment variables used for credentials and secrets
+
+Modular utilities allow easy migration to:
+
+Job queues
+
+Serverless workers
+
+Microservices
+
+7. Challenges & Mitigations
+
+Challenge 1: Large video processing
+
+Mitigation: Efficient FFmpeg pipelines + sequential processing
+
+Challenge 2: Noisy classroom audio
+
+Mitigation: Transcript cleaning + pause-based validation
+
+Challenge 3: LLM JSON reliability
+
+Mitigation: Strict system prompts + schema enforcement
+
+Challenge 4: Privacy concerns
+
+Mitigation: Body language analysis done fully on client-side
+
+Challenge 5: Multi-user scalability
+
+Mitigation: Institution-based architecture + bulk workflows
+
+8. Roadmap (Post-Hackathon)
+
+Async job queues for heavy processing
+
+Batch upload for teachers
+
+Advanced analytics dashboards
+
+Domain-specialized rubrics (DBMS, OS, DSA, Math)
+
+Model fine-tuning for timestamp precision
+
+Classroom live-analysis mode
